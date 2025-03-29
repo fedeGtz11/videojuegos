@@ -9,5 +9,5 @@ class Game extends Model
 {
     /** @use HasFactory<\Database\Factories\GameFactory> */
     use HasFactory;
-    protected $filliable = ['name', 'levels', 'release', 'image'];
+    protected $fillable = ['name', 'levels', 'release', 'image'];
 }
