@@ -13,8 +13,8 @@ class GameController extends Controller
      */
     public function index()
     {
-        $game = Game::all();
-        return view('Games.index', compact('game'));
+        $games = Game::all();
+        return view('Games.index', compact('games'));
     }
 
     /**
@@ -39,9 +39,12 @@ class GameController extends Controller
 
         $game = Game::create($request->all());
         if ($request->hasFile('image')) {
+            if (!file_exists(storage_path('app/public/img'))) {
+                mkdir(storage_path('app/public/img'), 0775, true);
+            }
             $nombre = $game->id . '.' . $request->file('image')->getClientOriginalExtension();
-            $img = $request->file('image')->storeAs('public/img', $nombre);
-            $game->image = '/img/' . $nombre;
+            $img = $request->file('image')->storeAs('img', $nombre, 'public');
+            $game->image = 'img/' . $nombre;
             $game->save();
         }
 
@@ -78,8 +81,8 @@ class GameController extends Controller
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($game->image);
             $nombre = $game->id . '.' . $request->file('image')->getClientOriginalExtension();
-            $request->file('image')->storeAs('public/img', $nombre);
-            $game->image = '/img/' . $nombre;
+            $request->file('image')->storeAs('img', $nombre, 'public');
+            $game->image = 'img/' . $nombre;
             $game->save();
         }
         $game->update($request->input());
